@@ -33,6 +33,7 @@
             $sentenceSQL->execute();
             $respuesta = $sentenceSQL->fetchAll(PDO::FETCH_ASSOC);
             $sentenceSQL->closeCursor();
+            //$respuesta = preg_replace("/[\r\n|\n|\r]+/", PHP_EOL, $respuesta);
             return  json_encode($respuesta);
         }
 
