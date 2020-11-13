@@ -24,7 +24,9 @@
             $sentenceSQL->execute(array(":id"=>$idSintoma));
             $respuesta = $sentenceSQL->fetchAll(PDO::FETCH_ASSOC);
             $sentenceSQL->closeCursor();
-            return  json_encode($respuesta[0]);
+            // $var = json_encode($respuesta[0]);
+            $res = str_replace (array("\r\n", "\n", "\r"), ' ', $respuesta[0]);
+            return  json_encode($res);
         }
 
         public function mostrarListaSintomas(){
@@ -33,8 +35,8 @@
             $sentenceSQL->execute();
             $respuesta = $sentenceSQL->fetchAll(PDO::FETCH_ASSOC);
             $sentenceSQL->closeCursor();
-            //$respuesta = preg_replace("/[\r\n|\n|\r]+/", PHP_EOL, $respuesta);
-            return  json_encode($respuesta);
+            $res = str_replace (array("\r\n", "\n", "\r"), ' ', $respuesta);
+            return  json_encode($res);
         }
 
         public function actualizarSintoma($idSintoma, $nombreSintoma){

@@ -5,23 +5,29 @@
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
             $_POST = json_decode(file_get_contents('php://input'),true);
-            $res = $enfermedad->ingresarEnfermedad($_POST['id_sistemas'],$_POST['nombre_enfermedad'],$_POST['descripcion_enfermedad'],$_POST['enlace_enfermedad']);
+            $res = $enfermedad->ingresarEnfermedad($_POST['nombre_enfermedad'],$_POST['descripcion_enfermedad'],$_POST['tratamiento_enfermedad']);
             echo $res;
             break;
         case 'GET':
-            if(isset($_GET['id'])){
-                $idSistema = $_GET['id'];
-                $res = $enfermedad->mostrarEnfermedad($idSistema);
-                echo json_encode($res);
+            if(isset($_GET['enf'])){
+                $idEnfermedad = $_GET['enf'];
+                $res = $enfermedad->mostrarListaDeSintomas($idEnfermedad);
+                echo $res;
             }else{
-                $res = $enfermedad->mostrarListaEnfermedades();
-                echo json_encode($res);
+                if(isset($_GET['id'])){
+                    $idEnfermedad = $_GET['id'];
+                    $res = $enfermedad->mostrarEnfermedad($idEnfermedad);
+                    echo $res;
+                }else{
+                    $res = $enfermedad->mostrarListaEnfermedades();
+                    echo $res;
+                }
             }
             break;
         case 'PUT':
             $_PUT = json_decode(file_get_contents('php://input'),true);
             $id= $_GET['id'];
-            $res = $enfermedad->actualizarEnfermedad($id,$_PUT['id_sistemas'],$_PUT['nombre_enfermedad'],$_PUT['descripcion_enfermedad'],$_PUT['enlace_enfermedad']);
+            $res = $enfermedad->actualizarEnfermedad($id,$_PUT['nombre_enfermedad'],$_PUT['descripcion_enfermedad'],$_PUT['tratamiento_enfermedad']);
             echo $res;
             break;
         case 'DELETE':

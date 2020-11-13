@@ -1,6 +1,7 @@
 
 <?php
 //listarTableDocente()
+    require_once("../model/model_sintoma.php"); 
     require_once("conexion.php");
     class Enfermedad extends Conexion{
         public function Enfermedad(){  
@@ -10,10 +11,20 @@
             $this->connexion_bd=null;
         }
 
-        public function ingresarEnfermedad($idSistemas,$nombre,$descripcion,$enlace){
-            $sql = "INSERT INTO enfermedad(id_sistemas, nombre_enfermedad, descripcion_enfermedad, enlace_enfermedad) VALUES(:id,:nombre,:descripcion,:enlace)";
+        public function mostrarListaDeSintomas($idEnfermedad){
+            $sql = "SELECT * FROM sintomas WHERE id_sintoma IN (SELECT id_sintoma FROM enfermedad_sintoma WHERE id_enfermedades = :idEnfermedad)";
             $sentenceSQL = $this->connexion_bd->prepare($sql);
-            $respuesta = $sentenceSQL->execute(array(":id"=>$idSistemas,":nombre"=>$nombre,":descripcion"=>$descripcion,":enlace"=>$enlace));
+            $sentenceSQL->execute(array(":idEnfermedad"=>$idEnfermedad));
+            $respuesta = $sentenceSQL->fetchAll(PDO::FETCH_ASSOC);
+            $sentenceSQL->closeCursor();
+            $res = str_replace (array("\r\n", "\n", "\r"), ' ', $respuesta);
+            return  json_encode($res);
+        }
+
+        public function ingresarEnfermedad($nombre,$descripcion,$tratamiento){
+            $sql = "INSERT INTO enfermedad(nombre_enfermedad, descripcion_enfermedad, tratamiento_enfermedad ) VALUES(:nombre,:descripcion,:tratamiento)";
+            $sentenceSQL = $this->connexion_bd->prepare($sql);
+            $respuesta = $sentenceSQL->execute(array(":nombre"=>$nombre,":descripcion"=>$descripcion,":tratamiento"=>$tratamiento));
             $sentenceSQL->closeCursor();
             return json_encode(array("respuesta"=>$respuesta));
         }
@@ -24,6 +35,7 @@
             $sentenceSQL->execute(array(":id"=>$idEnfermedad));
             $respuesta = $sentenceSQL->fetchAll(PDO::FETCH_ASSOC);
             $sentenceSQL->closeCursor();
+            $res = str_replace (array("\r\n", "\n", "\r"), ' ', $respuesta);
             return  json_encode($respuesta[0]);
         }
 
@@ -33,14 +45,14 @@
             $sentenceSQL->execute();
             $respuesta = $sentenceSQL->fetchAll(PDO::FETCH_ASSOC);
             $sentenceSQL->closeCursor();
-            //$respuesta = preg_replace("/[\r\n|\n|\r]+/", PHP_EOL, $respuesta);
-            return  json_encode($respuesta);
+            $res = str_replace (array("\r\n", "\n", "\r"), ' ', $respuesta);
+            return  json_encode($res);
         }
 
-        public function actualizarEnfermedad($idEnfermedad,$idSistemas,$nombre,$descripcion,$enlace){
-            $sql = "UPDATE enfermedad SET nombre_enfermedad = :nombre, descripcion_enfermedad = :descripcion, enlace_enfermedad = :enlace ,id_sistemas = :idSistema WHERE id_enfermedades = :id";
+        public function actualizarEnfermedad($idEnfermedad,$nombre,$descripcion,$tratamiento){
+            $sql = "UPDATE enfermedad SET nombre_enfermedad = :nombre, descripcion_enfermedad = :descripcion, tratamiento_enfermedad = :tratamiento  WHERE id_enfermedades = :id";
             $sentenceSQL = $this->connexion_bd->prepare($sql);
-            $respuesta = $sentenceSQL->execute(array(":id"=>$idEnfermedad,":nombre"=>$nombre,":descripcion"=>$descripcion,":enlace"=>$enlace,":idSistema"=>$idSistemas));
+            $respuesta = $sentenceSQL->execute(array(":id"=>$idEnfermedad,":nombre"=>$nombre,":descripcion"=>$descripcion,":tratamiento"=>$tratamiento));
             $sentenceSQL->closeCursor();
             return json_encode(array("respuesta"=>$respuesta));
         }

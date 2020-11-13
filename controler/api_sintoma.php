@@ -7,16 +7,16 @@
             //Agregars
             $_POST = json_decode(file_get_contents('php://input'),true);
             $res = $sintoma->ingresarSintoma($_POST['nombre_sintoma']);
-            echo $res;
+            echo json_encode($res);
             break;
         case 'GET':
             if(isset($_GET['id'])){
                 $idSintoma = $_GET['id'];
                 $res = $sintoma->mostrarSintoma($idSintoma);
-                echo json_encode($res);
+                echo $res;
             }else{
                 $res = $sintoma->mostrarListaSintomas();
-                echo json_encode($res);
+                echo $res;
             }
             break;
         case 'PUT':
